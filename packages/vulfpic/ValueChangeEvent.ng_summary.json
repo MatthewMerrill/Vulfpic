@@ -1,0 +1,13 @@
+{
+  "ngDeps": null,
+  "type": {
+    "ValueChangeEvent": {
+      "class": "Identifier",
+      "name": "ValueChangeEvent",
+      "moduleUrl": "asset:vulfpic/lib/ValueChangeEvent.dart",
+      "prefix": null,
+      "value": null
+    }
+  },
+  "alias": {}
+}

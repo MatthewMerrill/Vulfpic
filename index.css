@@ -1,0 +1,40 @@
+* {
+	font-family: "Vulf Mono_Regular Italic",  "monospace", "SansSerif", "sans-serif";
+}
+
+body {
+	width: 85%;
+	max-width: 600px;
+	margin: 0 auto;
+	padding: 5vw;
+	background-color: #D7FBFF;
+	overflow: scroll;
+}
+
+canvas {
+	border: 2pt solid black;
+	width: 500px;
+	max-width: 80%;
+}
+
+.hidden {
+	display: none;
+}
+
+
+/*
+ * PLEASE CONSIDER BUYING VULF'S FONT (vulf mono)
+ * VULFPECK.COM
+ */
+
+@font-face {
+	font-family: 'Vulf Mono_Regular Italic';
+	src:    url('Vulf_Mono-Regular_Italic_web.eot');
+	src:    url('Vulf_Mono-Regular_Italic_web.eot?#iefix') format('embedded-opentype'),
+	url('Vulf_Mono-Regular_Italic_web.woff') format('woff'),
+	url('Vulf_Mono-Regular_Italic_web.woff2') format('woff2'),
+	url('Vulf_Mono-Regular_Italic_web.ttf') format('truetype'),
+	url('Vulf_Mono-Regular_Italic_web.svg#svgFontName') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
