@@ -1,0 +1,111 @@
+{
+  "ngDeps": {
+    "1": "",
+    "3": [
+      {
+        "1": "dart:async",
+        "5": false
+      },
+      {
+        "1": "package:angular2/core.dart",
+        "5": false
+      },
+      {
+        "1": "package:angular2_components/angular2_components.dart",
+        "5": false
+      },
+      {
+        "1": "dart:html",
+        "5": false
+      },
+      {
+        "1": "dart:math",
+        "5": false
+      },
+      {
+        "1": "package:vulfpic/ValueChangeEvent.dart",
+        "5": false
+      }
+    ],
+    "5": [
+      {
+        "1": "ClippingCanvas",
+        "6": [
+          "AfterViewInit"
+        ],
+        "7": [
+          {
+            "2": "materialDirectives"
+          }
+        ]
+      }
+    ],
+    "6": "clipping_canvas.dart"
+  },
+  "type": {
+    "ClippingCanvas": {
+      "class": "Directive",
+      "isComponent": true,
+      "selector": "clipping-canvas",
+      "exportAs": null,
+      "type": {
+        "class": "Type",
+        "name": "ClippingCanvas",
+        "moduleUrl": "asset:vulfpic/lib/clipping_canvas/clipping_canvas.dart",
+        "prefix": null,
+        "isHost": false,
+        "value": null,
+        "diDeps": []
+      },
+      "changeDetection": 6,
+      "inputs": {},
+      "inputTypes": {},
+      "outputs": {
+        "change": "change"
+      },
+      "hostListeners": {},
+      "hostProperties": {},
+      "hostAttributes": {},
+      "lifecycleHooks": [
+        6
+      ],
+      "template": {
+        "encapsulation": 0,
+        "template": "<div>\n  <canvas id=\"drawingCanvas\" width=\"500\" height=\"500\"></canvas>\n  <input #uploadInput type=\"file\" (change)=\"onFileUpload($event)\">\n</div>",
+        "templateUrl": "asset:vulfpic/lib/clipping_canvas/clipping_canvas.html",
+        "styles": [],
+        "styleUrls": [
+          "asset:vulfpic/lib/clipping_canvas/clipping_canvas.css"
+        ],
+        "ngContentSelectors": []
+      },
+      "providers": [
+        {
+          "class": "Identifier",
+          "name": "materialProviders",
+          "moduleUrl": null,
+          "prefix": null,
+          "value": null
+        }
+      ],
+      "viewProviders": [],
+      "queries": [],
+      "viewQueries": [
+        {
+          "selectors": [
+            {
+              "value": "uploadInput",
+              "identifier": null,
+              "identifierIsInstance": false
+            }
+          ],
+          "descendants": true,
+          "first": true,
+          "propertyName": "uploadInput",
+          "read": null
+        }
+      ]
+    }
+  },
+  "alias": {}
+}
