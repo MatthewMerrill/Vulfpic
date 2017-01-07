@@ -1,0 +1,45 @@
+<h4 style="white-space: pre">-----------------------------------------
+---- vulfpic ----------------------------
+-----------------------------------------
+-------------------------- fan-made -----
+-------------------------------- site ---
+-----------------------------------------</h4>
+
+<material-toggle #showOutput
+                 label="Show Clipping/Output"></material-toggle>
+
+<div [ngClass]="{hidden: showOutput.checked}">
+  <clipping-canvas #clippingCanvas
+                   *ngIf="!showOutput.checked"
+                   (change)="outputCanvas.updateData($event)"></clipping-canvas>
+</div>
+
+<div [ngClass]="{hidden: !showOutput.checked}">
+  <output-canvas #outputCanvas
+                 [xOffset]="xOffsetInput.inputText"
+                 [yOffset]="yOffsetInput.inputText"
+                 [xDelta]="xDeltaInput.inputText"
+                 [yDelta]="yDeltaInput.inputText"
+                 [scale]="scaleInput.inputText"></output-canvas>
+  <span>
+    <material-input #xOffsetInput
+                    label="X Position"
+                    (keyup.enter)="outputCanvas.draw()"></material-input>
+
+    <material-input #yOffsetInput
+                    label="Y Position"
+                    (keyup.enter)="outputCanvas.draw()"></material-input>
+    <br/>
+    <material-input #xDeltaInput
+                    label="X Delta"
+                    (keyup.enter)="outputCanvas.draw()"></material-input>
+
+    <material-input #yDeltaInput
+                    label="Y Delta"
+                    (keyup.enter)="outputCanvas.draw()"></material-input>
+    <br/>
+    <material-input #scaleInput
+                    label="Image Size"
+                    (keyup.enter)="outputCanvas.draw()"></material-input>
+  </span>
+</div>
