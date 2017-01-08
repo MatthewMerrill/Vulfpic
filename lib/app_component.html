@@ -10,7 +10,6 @@
 
 <div [ngClass]="{hidden: showOutput.checked}">
   <clipping-canvas #clippingCanvas
-                   *ngIf="!showOutput.checked"
                    (change)="outputCanvas.updateData($event)"></clipping-canvas>
 </div>
 

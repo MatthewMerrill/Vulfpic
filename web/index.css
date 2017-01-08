@@ -12,6 +12,7 @@ body {
 }
 
 canvas {
+	cursor: pointer;
 	border: 2pt solid black;
 	width: 500px;
 	max-width: 80%;
