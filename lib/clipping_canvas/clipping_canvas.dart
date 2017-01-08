@@ -18,14 +18,17 @@ import 'package:vulfpic/ValueChangeEvent.dart';
 )
 class ClippingCanvas implements AfterViewInit {
 
-  CanvasElement canvas;
-  CanvasRenderingContext2D ctx;
-
   @ViewChild('uploadInput')
   var uploadInput;
 
   @ViewChild('revealToggle')
   var revealToggle;
+
+  @ViewChild('brushSizeInput')
+  var brushSizeInput;
+
+  CanvasElement canvas;
+  CanvasRenderingContext2D ctx;
 
   CanvasElement data = new CanvasElement();
   CanvasRenderingContext2D dataCtx;
@@ -33,16 +36,16 @@ class ClippingCanvas implements AfterViewInit {
   CanvasElement mask = new CanvasElement();
   CanvasRenderingContext2D maskCtx;
 
+  CanvasElement maskedData = new CanvasElement();
+  CanvasRenderingContext2D maskedDataCtx;
+
   @Output()
   EventEmitter change = new EventEmitter();
   CanvasElement oldValue = null;
 
-  int WIDTH = 500;
-  int HEIGHT = 500;
-
   double brushSize = 16.0;
   double hardness = 100.0;
-  bool brushColor;
+  bool brushColor = false;
 
   List<Point> clicks = new List<Point>();
   List<bool> clickDrag = new List<bool>();
@@ -56,6 +59,7 @@ class ClippingCanvas implements AfterViewInit {
     clicks.add(new Point(x, y));
     clickDrag.add(dragging);
     clickReveal.add(revealing);
+    clickSize.add(brushSizeInput.nativeElement.value);
   }
 
   @override
@@ -63,12 +67,18 @@ class ClippingCanvas implements AfterViewInit {
     canvas = querySelector('#drawingCanvas');
     ctx = canvas.getContext('2d');
 
+    mask.width = 4096;
+    mask.height = 4096;
     maskCtx = mask.getContext('2d');
+
+    maskedData.width = 4096;
+    maskedData.height = 4096;
+    maskedDataCtx = maskedData.getContext('2d');
 
     // http://www.williammalone.com/articles/create-html5-canvas-javascript-drawing-app/
     canvas.onMouseDown.listen((MouseEvent e) {
-      var mouseX = e.offset.x;
-      var mouseY = e.offset.y;
+      var mouseX = e.offset.x / canvas.width;
+      var mouseY = e.offset.y / canvas.height;
 
       paint = true;
       revealing = revealToggle.checked;
@@ -77,8 +87,8 @@ class ClippingCanvas implements AfterViewInit {
     });
 
     canvas.onMouseMove.listen((MouseEvent e) {
-      var mouseX = e.offset.x;
-      var mouseY = e.offset.y;
+      var mouseX = e.offset.x / canvas.width;
+      var mouseY = e.offset.y / canvas.height;
 
       if (paint) {
         addClick(mouseX, mouseY, true);
@@ -98,19 +108,20 @@ class ClippingCanvas implements AfterViewInit {
 
   @Input()
   void draw() {
-    canvas.width = WIDTH;
-    canvas.height = HEIGHT;
-    ctx.clearRect(0, 0, WIDTH, HEIGHT);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     maskCtx.lineJoin = "round";
-    maskCtx.lineWidth = 5;
+    maskCtx.lineWidth = brushSize;
     maskCtx.setStrokeColorRgb(255,255,255);
     maskCtx.setFillColorRgb(255, 255, 255);
-    maskCtx.fillRect(0, 0, WIDTH, HEIGHT);
+    maskCtx.fillRect(0, 0, mask.width, mask.height);
 
-    window.console.debug(clicks);
+    maskedData.width = 4096;
+    maskedData.height = 4096;
 
     for (int i = 0; i < clicks.length; i++) {
+      maskCtx.lineWidth = clickSize[i];
+
       if (clickReveal[i]) {
         maskCtx.globalCompositeOperation = "source-over";
         maskCtx.strokeStyle = "rgb(255,255,255)";
@@ -118,25 +129,27 @@ class ClippingCanvas implements AfterViewInit {
         maskCtx.globalCompositeOperation = "destination-out";
         maskCtx.strokeStyle = "rgba(0,0,0,1)";
       }
+
       maskCtx.beginPath();
       if (clickDrag[i] && i > 0) {
-        maskCtx.moveTo(clicks[i-1].x, clicks[i-1].y);
+        maskCtx.moveTo(clicks[i-1].x * mask.width, clicks[i-1].y * mask.height);
       } else {
-        maskCtx.moveTo(clicks[i].x, clicks[i].y);
+        maskCtx.moveTo(clicks[i].x * mask.width, clicks[i].y * mask.height);
       }
-      maskCtx.lineTo(clicks[i].x, clicks[i].y);
+      maskCtx.lineTo(clicks[i].x * mask.width, clicks[i].y * mask.height);
       maskCtx.closePath();
       maskCtx.stroke();
     }
     maskCtx.globalCompositeOperation = "source-over";
 
-    ctx.globalCompositeOperation = "source-over";
-    ctx.drawImageScaled(mask, 0, 0, WIDTH, HEIGHT);
-    ctx.globalCompositeOperation = "source-in";
-    ctx.drawImageScaled(data, 0, 0, WIDTH, HEIGHT);
-    ctx.globalCompositeOperation = "source-over";
+    maskedDataCtx.globalCompositeOperation = "source-over";
+    maskedDataCtx.drawImageScaled(mask, 0, 0, maskedData.width, maskedData.height);
+    maskedDataCtx.globalCompositeOperation = "source-in";
+    maskedDataCtx.drawImageScaled(data, 0, 0, maskedData.width, maskedData.height);
+    maskedDataCtx.globalCompositeOperation = "source-over";
+    ctx.drawImageScaled(maskedData, 0, 0, canvas.width, canvas.height);
 
-    change.emit(canvas);
+    change.emit(maskedData);
   }
 
   void onFileUpload(event) {
