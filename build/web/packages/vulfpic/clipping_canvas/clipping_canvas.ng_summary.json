@@ -71,7 +71,7 @@
       ],
       "template": {
         "encapsulation": 0,
-        "template": "<div>\n  <canvas id=\"drawingCanvas\" width=\"500\" height=\"500\"></canvas>\n\n  <br/>\n  <label for=\"brushSizeInput\">Brush Size</label>\n  <input id=\"brushSizeInput\" #brushSizeInput type=\"number\" value=\"16\" disabled>\n  <br/>\n\n  <material-toggle #revealToggle\n                   label=\"Hide/Reveal\"></material-toggle>\n  <br/>\n  <br/>\n\n  <input #uploadInput type=\"file\" (change)=\"onFileUpload($event)\">\n</div>",
+        "template": "<div>\n  <canvas id=\"drawingCanvas\" width=\"500\" height=\"500\"></canvas>\n\n  <br/>\n  <label for=\"brushSizeInput\">Brush Size</label>\n  <input id=\"brushSizeInput\" #brushSizeInput type=\"number\" value=\"16\">\n  <br/>\n\n  <material-toggle #revealToggle\n                   label=\"Hide/Reveal\"></material-toggle>\n  <br/>\n  <br/>\n\n  <input #uploadInput type=\"file\" (change)=\"onFileUpload($event)\">\n</div>",
         "templateUrl": "asset:vulfpic/lib/clipping_canvas/clipping_canvas.html",
         "styles": [],
         "styleUrls": [
@@ -115,6 +115,19 @@
           "descendants": true,
           "first": true,
           "propertyName": "revealToggle",
+          "read": null
+        },
+        {
+          "selectors": [
+            {
+              "value": "brushSizeInput",
+              "identifier": null,
+              "identifierIsInstance": false
+            }
+          ],
+          "descendants": true,
+          "first": true,
+          "propertyName": "brushSizeInput",
           "read": null
         }
       ]
