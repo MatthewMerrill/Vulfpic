@@ -5,8 +5,17 @@
 -------------------------------- site ---
 -----------------------------------------</h4>
 
+<p>Use the Clipping/Output toggle to switch between the "clipping" and "positioning" editors.</p>
+<ol>
+  <li>Upload an image and use the clipping editor to isolate just the part you want.</li>
+  <li>Swap into the positioning editor and change the values to get the positioning you want.</li>
+  <li>Right click the positioned image to save your image and/or copy it to your clipboard.</li>
+</ol>
+
+<br/>
+
 <material-toggle #showOutput
-                 label="Show Clipping/Output"></material-toggle>
+                 label="Clipping Editor / Positioning Editor"></material-toggle>
 
 <div [ngClass]="{hidden: showOutput.checked}">
   <clipping-canvas #clippingCanvas
@@ -15,30 +24,35 @@
 
 <div [ngClass]="{hidden: !showOutput.checked}">
   <output-canvas #outputCanvas
-                 [xOffset]="xOffsetInput.inputText"
-                 [yOffset]="yOffsetInput.inputText"
-                 [xDelta]="xDeltaInput.inputText"
-                 [yDelta]="yDeltaInput.inputText"
-                 [scale]="scaleInput.inputText"></output-canvas>
+                 [xOffset]="xOffsetInput.value"
+                 [yOffset]="yOffsetInput.value"
+                 [xDelta]="xDeltaInput.value"
+                 [yDelta]="yDeltaInput.value"
+                 [scale]="scaleInput.value"></output-canvas>
   <span>
-    <material-input #xOffsetInput
-                    label="X Position"
-                    (keyup.enter)="outputCanvas.draw()"></material-input>
+    <label>X Offset (-1612 - +1612)
+        <input #xOffsetInput type="number"
+               (input)="outputCanvas.draw()" value="175" min="-1612" max="1612">
+    </label><br/>
 
-    <material-input #yOffsetInput
-                    label="Y Position"
-                    (keyup.enter)="outputCanvas.draw()"></material-input>
-    <br/>
-    <material-input #xDeltaInput
-                    label="X Delta"
-                    (keyup.enter)="outputCanvas.draw()"></material-input>
+    <label>Y Offset (-1612 - +1612)
+        <input #yOffsetInput type="number"
+               (input)="outputCanvas.draw()" value="250" min="-1612" max="1612">
+    </label><br/>
 
-    <material-input #yDeltaInput
-                    label="Y Delta"
-                    (keyup.enter)="outputCanvas.draw()"></material-input>
-    <br/>
-    <material-input #scaleInput
-                    label="Image Size"
-                    (keyup.enter)="outputCanvas.draw()"></material-input>
+    <label>X Delta (-1612 - +1612)
+        <input #xDeltaInput type="number"
+               (input)="outputCanvas.draw()" value="-10" min="-1612" max="1612">
+    </label><br/>
+
+    <label>Y Delta (-1612 - +1612)
+        <input #yDeltaInput type="number"
+               (input)="outputCanvas.draw()" value="-10" min="-1612" max="1612">
+    </label><br/>
+
+    <label>Scale (0-1612)
+        <input #scaleInput type="number"
+               (input)="outputCanvas.draw()" value="100" min="0" max="1612">
+    </label><br/>
   </span>
 </div>

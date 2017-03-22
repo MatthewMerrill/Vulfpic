@@ -3,10 +3,10 @@
 }
 
 body {
-	width: 85%;
-	max-width: 600px;
+	width: 85vw;
+	max-width: 900px;
 	margin: 0 auto;
-	padding: 5vw;
+	padding: 10px 5vw;
 	background-color: #D7FBFF;
 	overflow: scroll;
 }
@@ -16,9 +16,9 @@ canvas {
 	border: 2pt solid black;
 
 	width: 85vw;
-	max-width: 500px;
+	max-width: 650px;
 	height: 85vw;
-	max-height: 500px;
+	max-height: 650px;
 }
 
 .hidden {
