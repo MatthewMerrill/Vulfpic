@@ -14,8 +14,11 @@ body {
 canvas {
 	cursor: pointer;
 	border: 2pt solid black;
-	width: 500px;
-	max-width: 80%;
+
+	width: 85vw;
+	max-width: 500px;
+	height: 85vw;
+	max-height: 500px;
 }
 
 .hidden {

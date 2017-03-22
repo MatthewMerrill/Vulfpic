@@ -26,8 +26,8 @@ class OutputCanvas implements AfterViewInit {
 
   ImageData pixels;
 
-  int WIDTH = 500;
-  int HEIGHT = 500;
+  int WIDTH = 512;
+  int HEIGHT = 512;
 
   @Input()
   String xOffset = "-50";
@@ -58,6 +58,7 @@ class OutputCanvas implements AfterViewInit {
 //          window.console.debug(event.newValue);
 
           maskedData = event;
+          draw();
 //
 //          window.console.debug(maskedData);
 //        } catch (err) {
@@ -68,10 +69,12 @@ class OutputCanvas implements AfterViewInit {
   @Input()
   void draw() {
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
-    ctx.setFillColorRgb(154, 190, 224);
+    ctx.setFillColorRgb(
+//        219, 143, 130);
+        154, 190, 224);
     ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
-    xOffset = (xOffset.length>0) ? xOffset : "-50";
+    xOffset = (xOffset.length>0) ? xOffset : "150";
     yOffset = (yOffset.length>0) ? yOffset : "50";
     xDelta = (xDelta.length>0) ? xDelta : "10";
     yDelta = (yDelta.length>0) ? yDelta : "-10";
@@ -82,15 +85,17 @@ class OutputCanvas implements AfterViewInit {
       return;
     }
 
-    var c = new CanvasElement();
-
     ctx.setFillColorRgb(255, 255, 255);
     for (int i = 0; i < 6; i++) {
-        ctx.drawImageScaled(
+      ctx.shadowColor = '#333333';
+      ctx.shadowBlur = 10;
+      ctx.shadowOffsetX = 3;
+      ctx.shadowOffsetY = 3;
+      ctx.drawImageScaled(
             maskedData,
-            250 + int.parse(xOffset) + (i * int.parse(xDelta)),
-            250 + int.parse(yOffset) + (i * int.parse(yDelta)),
-            int.parse(scale), int.parse(scale));
+              0 + (int.parse(xOffset) + ((5-i) * int.parse(xDelta))) - int.parse(scale),
+            512 - (int.parse(yOffset) + ((5-i) * int.parse(yDelta))) - int.parse(scale),
+            2*int.parse(scale), 2*int.parse(scale));
     }
   }
 }

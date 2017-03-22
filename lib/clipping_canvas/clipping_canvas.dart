@@ -57,19 +57,28 @@ class ClippingCanvas implements AfterViewInit {
   Point cursorPosition;
   bool showCursor = false;
 
-  int DATA_WIDTH = 2048;
-  int DATA_HEIGHT = 2048;
+  int DATA_WIDTH = 512;
+  int DATA_HEIGHT = 512;
 
   void addClick(int x, int y, bool dragging)
   {
-    clicks.add(new Point(x, y));
+    Point click = new Point(x, y);
+
+    clicks.add(click);
     clickDrag.add(dragging);
     clickReveal.add(revealing);
     clickSize.add(brushSize);
+
+    int i = clicks.length - 1;
+    if (clickDrag[i] && i > 0) {
+      drawClick(clicks[i], clickSize[i], clickReveal[i], clicks[i-1]);
+    } else {
+      drawClick(clicks[i], clickSize[i], clickReveal[i]);
+    }
   }
 
   @override
-  ngAfterViewInit() {
+  void ngAfterViewInit() {
     canvas = querySelector('#drawingCanvas');
     ctx = canvas.getContext('2d');
 
@@ -83,25 +92,30 @@ class ClippingCanvas implements AfterViewInit {
 
     // http://www.williammalone.com/articles/create-html5-canvas-javascript-drawing-app/
     canvas.onMouseDown.listen((MouseEvent e) {
-      var mouseX = e.offset.x * mask.width / canvas.width;
-      var mouseY = e.offset.y * mask.height / canvas.width;
+      var mouseX = e.offset.x * mask.width / canvas.client.width;
+      var mouseY = e.offset.y * mask.height / canvas.client.height;
 
       paint = true;
       revealing = revealToggle.checked;
       addClick(mouseX, mouseY, false);
 
       showCursor = true;
-      cursorPosition = new Point(e.offset.x, e.offset.y);
+      cursorPosition = new Point(
+          e.offset.x*canvas.width/canvas.client.width,
+          e.offset.y*canvas.width/canvas.client.width);
 
-      draw();
+      draw(fromScratch: false);
     });
 
     canvas.onMouseMove.listen((MouseEvent e) {
-      var mouseX = e.offset.x * mask.width / canvas.width;
-      var mouseY = e.offset.y * mask.height / canvas.width;
+      var mouseX = e.offset.x * mask.width / canvas.client.width;
+      var mouseY = e.offset.y * mask.height / canvas.client.height;
 
       showCursor = true;
-      cursorPosition = new Point(e.offset.x, e.offset.y);
+      cursorPosition = new Point(
+          e.offset.x*canvas.width/canvas.client.width,
+          e.offset.y*canvas.width/canvas.client.width);
+
       brushSize = double.parse(brushSizeInput.nativeElement.value);
 
       if (paint) {
@@ -119,44 +133,63 @@ class ClippingCanvas implements AfterViewInit {
       showCursor = false;
     });
 
+
+    int undosScheduled = 0;
+    document.onKeyDown.listen((KeyboardEvent e) {
+      window.console.debug(e.key);
+      if (e.ctrlKey) {
+        if (e.key == "z") {
+          if (clicks.isEmpty)
+            return;
+
+          if (undosScheduled++ > 1)
+            return;
+
+          while (undosScheduled > 0) {
+            bool continueRemoving = true;
+            while (clicks.isNotEmpty && continueRemoving) {
+              continueRemoving = clickDrag.last;
+
+              clicks.removeLast();
+              clickSize.removeLast();
+              clickDrag.removeLast();
+              clickReveal.removeLast();
+            }
+            undosScheduled--;
+          }
+
+          draw(fromScratch: true);
+        }
+      }
+    });
+
     draw();
   }
 
   @Input()
-  void draw() {
+  void draw({bool fromScratch: false}) {
+    canvas.width = canvas.client.width;
+    canvas.height = canvas.client.height;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     maskCtx.lineJoin = "round";
     maskCtx.lineWidth = brushSize;
     maskCtx.setStrokeColorRgb(255, 255, 255);
-    maskCtx.setFillColorRgb(255, 255, 255);
-    maskCtx.fillRect(0, 0, mask.width, mask.height);
+    maskedDataCtx.clearRect(0, 0, maskedData.width, maskedData.height);
 
-    maskedData.width = DATA_WIDTH;
-    maskedData.height = DATA_HEIGHT;
+    if (fromScratch) {
+      maskCtx.globalCompositeOperation = "source-over";
+      maskCtx.setFillColorRgb(255, 255, 255);
+      maskCtx.fillRect(0, 0, mask.width, mask.height);
 
-    for (int i = 0; i < clicks.length; i++) {
-      maskCtx.lineWidth = 2*clickSize[i];
-
-      if (clickReveal[i]) {
-        maskCtx.globalCompositeOperation = "source-over";
-        maskCtx.strokeStyle = "rgb(255,255,255)";
-      } else {
-        maskCtx.globalCompositeOperation = "destination-out";
-        maskCtx.strokeStyle = "rgba(0,0,0,1)";
+      for (int i = 0; i < clicks.length; i++) {
+        if (clickDrag[i] && i > 0) {
+          drawClick(clicks[i], clickSize[i], clickReveal[i], clicks[i-1]);
+        } else {
+          drawClick(clicks[i], clickSize[i], clickReveal[i]);
+        }
       }
-
-      maskCtx.beginPath();
-      if (clickDrag[i] && i > 0) {
-        maskCtx.moveTo(clicks[i - 1].x, clicks[i - 1].y);
-      } else {
-        maskCtx.moveTo(clicks[i].x, clicks[i].y);
-      }
-      maskCtx.lineTo(clicks[i].x, clicks[i].y);
-      maskCtx.closePath();
-      maskCtx.stroke();
     }
-    maskCtx.globalCompositeOperation = "source-over";
 
     maskedDataCtx.globalCompositeOperation = "source-over";
     maskedDataCtx.drawImageScaled(
@@ -170,12 +203,39 @@ class ClippingCanvas implements AfterViewInit {
     if (showCursor) {
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.arc(cursorPosition.x, cursorPosition.y, brushSize*canvas.width/mask.width, 0, 6.284);
+      ctx.arc(cursorPosition.x, cursorPosition.y, brushSize*canvas.width~/mask.width, 0, 6.284);
       ctx.closePath();
       ctx.stroke();
+
+      ctx.lineWidth = .5;
+    }
+    change.emit(maskedData);
+  }
+
+  void drawClick(Point click, double size, bool revealing, [Point from]) {
+    if (from == null) from = click;
+
+    maskCtx.lineJoin = "round";
+    maskCtx.lineWidth = 2 * size;
+    maskCtx.setStrokeColorRgb(255, 255, 255);
+
+    if (revealing) {
+      maskCtx.globalCompositeOperation = "source-over";
+      maskCtx.strokeStyle = "rgb(255,255,255)";
+    } else {
+      maskCtx.globalCompositeOperation = "destination-out";
+//      maskCtx.strokeStyle = "rgb(255,255,255)";
+      maskCtx.strokeStyle = "rgba(0,0,0,1)";
     }
 
-    change.emit(maskedData);
+    maskCtx.beginPath();
+    maskCtx.moveTo(from.x, from.y);
+    maskCtx.lineTo(click.x, click.y);
+    maskCtx.closePath();
+    maskCtx.stroke();
+
+    maskCtx.globalCompositeOperation = "source-over";
+    draw();
   }
 
   void onFileUpload(event) {
@@ -187,8 +247,8 @@ class ClippingCanvas implements AfterViewInit {
       loadBlobAsImg(file).then((img) {
         oldValue = data;
         data = new CanvasElement();
-        data.width = img.width * 10/8;
-        data.height = (img.height * 10)/8;
+        data.width = max(img.width, img.height) * 10 ~/8;
+        data.height = max(img.width, img.height) * 10 ~/8;
         dataCtx = data.context2D;
 
         dataCtx.drawImage(
@@ -203,7 +263,7 @@ class ClippingCanvas implements AfterViewInit {
         clickReveal.clear();
         clickSize.clear();
 
-        draw();
+        draw(fromScratch: true);
       });
     }
   }

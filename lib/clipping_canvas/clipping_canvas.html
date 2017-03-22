@@ -1,6 +1,8 @@
 <div>
-  <canvas id="drawingCanvas" width="500" height="500"></canvas>
+  <canvas id="drawingCanvas"></canvas>
 
+  <br/>
+  <input #uploadInput type="file" (change)="onFileUpload($event)">
   <br/>
   <label for="brushSizeInput">Brush Size</label>
   <input id="brushSizeInput" #brushSizeInput type="number" value="16">
@@ -8,8 +10,4 @@
 
   <material-toggle #revealToggle
                    label="Hide/Reveal"></material-toggle>
-  <br/>
-  <br/>
-
-  <input #uploadInput type="file" (change)="onFileUpload($event)">
 </div>
