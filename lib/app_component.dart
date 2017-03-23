@@ -45,7 +45,8 @@ class AppComponent {
       "xDelta": outputCanvas.xDelta,
       "yDelta": outputCanvas.yDelta,
       "scale": outputCanvas.scale,
-      "bkgdIdx": outputCanvas.bkgdIdx
+      "bkgdIdx": outputCanvas.bkgdIdx,
+      "rotation": outputCanvas.rotation
     };
     var dataStr = "data:text/json;charset=utf-8," + JSON.encode(data);
     var dlAnchorElem = querySelector('#downloadAnchorElem');
@@ -84,6 +85,7 @@ class AppComponent {
         outputCanvas.yDelta = map["yDelta"];
         outputCanvas.scale = map["scale"];
         outputCanvas.bkgdIdx = map["bkgdIdx"];
+        outputCanvas.rotation = map["rotation"] != null ? map["rotation"] : 0;
 
         clippingCanvas.draw(fromScratch: true);
       });

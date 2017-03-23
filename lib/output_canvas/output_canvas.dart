@@ -53,6 +53,9 @@ class OutputCanvas implements AfterViewInit {
   @Input()
   int scale = 100;
 
+  @Input()
+  int rotation = 0;
+
   @override
   ngAfterViewInit() {
     canvas = querySelector('#outputCanvas');
@@ -96,6 +99,8 @@ class OutputCanvas implements AfterViewInit {
     }
 
     ctx.setFillColorRgb(255, 255, 255);
+    ctx.rotate(rotation*PI/180);
+
     for (int i = 0; i < 6; i++) {
       ctx.shadowColor = '#333333';
       ctx.shadowBlur = 10;
@@ -107,5 +112,7 @@ class OutputCanvas implements AfterViewInit {
             512 - (yOffset + ((5-i) * yDelta)) - scale,
             2*scale, 2*scale);
     }
+
+    ctx.rotate(-rotation*PI/180);
   }
 }
