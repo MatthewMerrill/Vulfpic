@@ -26,23 +26,32 @@ class OutputCanvas implements AfterViewInit {
 
   ImageData pixels;
 
-  int WIDTH = 512;
-  int HEIGHT = 512;
+  int WIDTH = 1024;
+  int HEIGHT = 1024;
+
+  List<List<int>> bkgds = [
+    [154, 190, 224],
+    [219, 143, 130],
+    [234, 238, 224],
+    [225, 228, 233],
+
+  ];
+  int bkgdIdx = 0;
 
   @Input()
-  String xOffset = "-50";
+  int xOffset = 175;
 
   @Input()
-  String yOffset = "-50";
+  int yOffset = 275;
 
   @Input()
-  String xDelta = "10";
+  int xDelta = -10;
 
   @Input()
-  String yDelta = "-10";
+  int yDelta = -10;
 
   @Input()
-  String scale = "-10";
+  int scale = 100;
 
   @override
   ngAfterViewInit() {
@@ -70,15 +79,16 @@ class OutputCanvas implements AfterViewInit {
   void draw() {
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
     ctx.setFillColorRgb(
-//        219, 143, 130);
-        154, 190, 224);
+        bkgds[bkgdIdx][0],
+        bkgds[bkgdIdx][1],
+        bkgds[bkgdIdx][2]);
     ctx.fillRect(0, 0, WIDTH, HEIGHT);
-
-    xOffset = (xOffset.length>0) ? xOffset : "150";
-    yOffset = (yOffset.length>0) ? yOffset : "50";
-    xDelta = (xDelta.length>0) ? xDelta : "10";
-    yDelta = (yDelta.length>0) ? yDelta : "-10";
-    scale = (scale.length>0) ? scale : "100";
+//
+//    xOffset = (xOffset.length>0) ? xOffset : "150";
+//    yOffset = (yOffset.length>0) ? yOffset : "50";
+//    xDelta = (xDelta.length>0) ? xDelta : "10";
+//    yDelta = (yDelta.length>0) ? yDelta : "-10";
+//    scale = (scale.length>0) ? scale : "100";
 
     if (maskedData == null || !(maskedData is CanvasElement)) {
       window.console.debug("No maskedData :(");
@@ -93,9 +103,9 @@ class OutputCanvas implements AfterViewInit {
       ctx.shadowOffsetY = 3;
       ctx.drawImageScaled(
             maskedData,
-              0 + (int.parse(xOffset) + ((5-i) * int.parse(xDelta))) - int.parse(scale),
-            512 - (int.parse(yOffset) + ((5-i) * int.parse(yDelta))) - int.parse(scale),
-            2*int.parse(scale), 2*int.parse(scale));
+              0 + (xOffset + ((5-i) * xDelta)) - scale,
+            512 - (yOffset + ((5-i) * yDelta)) - scale,
+            2*scale, 2*scale);
     }
   }
 }

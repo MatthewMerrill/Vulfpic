@@ -57,8 +57,8 @@ class ClippingCanvas implements AfterViewInit {
   Point cursorPosition;
   bool showCursor = false;
 
-  int DATA_WIDTH = 512;
-  int DATA_HEIGHT = 512;
+  int DATA_WIDTH = 1024;
+  int DATA_HEIGHT = 1024;
 
   void addClick(int x, int y, bool dragging)
   {
@@ -209,6 +209,7 @@ class ClippingCanvas implements AfterViewInit {
 
       ctx.lineWidth = .5;
     }
+
     change.emit(maskedData);
   }
 
