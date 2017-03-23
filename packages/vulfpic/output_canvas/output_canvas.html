@@ -38,5 +38,10 @@
                [ngModel]="scale"
                (ngModelChange)="scale=$event;draw()" min="0" max="1612">
     </label><br/>
+    <label>Rotation (-360 - +360)
+        <input #scaleInput type="number"
+               [ngModel]="rotation"
+               (ngModelChange)="rotation=$event;draw()" min="-360" max="360">
+    </label><br/>
   </span>
 </div>
