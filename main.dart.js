@@ -24288,7 +24288,7 @@ t.setAttribute(w.f,"")
 this.bL.appendChild(this.c9)
 this.d7=new V.w(35,33,this,this.c9,null,null,null,null)
 b0=L.Bv(this.X(35),this.d7)
-t=new N.fs(null,null,null,null,1024,1024,[[154,190,224],[219,143,130],[234,238,224],[225,228,233]],0,175,275,-10,-10,100)
+t=new N.fs(null,null,null,null,1024,1024,[[154,190,224],[247,207,205],[234,238,224],[225,228,233]],0,175,275,-10,-10,100)
 this.by=t
 r=this.d7
 r.r=t
@@ -26502,7 +26502,7 @@ z=this.ar("output-canvas",a,null)
 this.k1=z
 this.k2=new V.w(0,null,this,z,null,null,null,null)
 y=L.Bv(this.X(0),this.k2)
-z=new N.fs(null,null,null,null,1024,1024,[[154,190,224],[219,143,130],[234,238,224],[225,228,233]],0,175,275,-10,-10,100)
+z=new N.fs(null,null,null,null,1024,1024,[[154,190,224],[247,207,205],[234,238,224],[225,228,233]],0,175,275,-10,-10,100)
 this.k3=z
 x=this.k2
 x.r=z
@@ -26538,7 +26538,7 @@ this.P()
 if(this.fr===C.e)this.k3.eo()},
 $asl:I.M},
 Tl:{"^":"a:1;",
-$0:[function(){return new N.fs(null,null,null,null,1024,1024,[[154,190,224],[219,143,130],[234,238,224],[225,228,233]],0,175,275,-10,-10,100)},null,null,0,0,null,"call"]}}],["","",,F,{"^":"",
+$0:[function(){return new N.fs(null,null,null,null,1024,1024,[[154,190,224],[247,207,205],[234,238,224],[225,228,233]],0,175,275,-10,-10,100)},null,null,0,0,null,"call"]}}],["","",,F,{"^":"",
 a_l:[function(){var z,y,x,w,v,u,t,s,r
 new F.Vb().$0()
 z=$.jP
