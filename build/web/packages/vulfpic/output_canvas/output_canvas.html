@@ -5,7 +5,7 @@
   <material-button class="white" raised (click)="bkgdIdx=3; draw();">White</material-button>
 
   <br/>
-  <canvas id="outputCanvas" width="500" height="500"></canvas>
+  <canvas id="outputCanvas" width="1024" height="1024"></canvas>
 
   <br/>
   <span>
@@ -38,7 +38,7 @@
                [ngModel]="scale"
                (ngModelChange)="scale=$event;draw()" min="0" max="1612">
     </label><br/>
-    <label>Rotation (-360 - +360)
+    <label>Rotation
         <input #scaleInput type="number"
                [ngModel]="rotation"
                (ngModelChange)="rotation=$event;draw()" min="-360" max="360">

@@ -252,10 +252,29 @@ class ClippingCanvas implements AfterViewInit {
         data.height = max(img.width, img.height) * 10 ~/8;
         dataCtx = data.context2D;
 
-        dataCtx.drawImage(
-            img,
+        CanvasElement grainData = new CanvasElement(
+            width:data.width,
+            height:data.height);
+        CanvasRenderingContext2D grainCtx = grainData.context2D;
+
+        dataCtx.drawImage(img,
             (data.width-img.width)/2,
             (data.height-img.height)/2);
+
+        grainCtx.drawImage(img,
+            (data.width-img.width)/2,
+            (data.height-img.height)/2);
+
+        initGrain();
+        grainCtx.save();
+        grainCtx.scale((data.width/333).ceil(), (data.width/333).ceil());
+        grainCtx.globalCompositeOperation = "overlay";
+        grainCtx.fillStyle = grainCtx.createPattern(patternCanvas, 'repeat');
+        grainCtx.fillRect(0, 0, data.width, data.height);
+        grainCtx.restore();
+
+        dataCtx.globalCompositeOperation = "source-in";
+        dataCtx.drawImage(grainData, 0, 0);
 
         maskCtx.clearRect(0, 0, mask.width, mask.height);
 
@@ -288,5 +307,38 @@ class ClippingCanvas implements AfterViewInit {
     });
   }
 
+// change these settings
+  static var patternSize = 64,
+      patternScaleX = 3,
+      patternScaleY = 3,
+      patternRefreshInterval = 8,
+      patternAlpha = 48; // int between 0 and 255,
+
+  var patternPixelDataLength = patternSize * patternSize * 4,
+      patternCanvas,
+      patternCtx,
+      patternData,
+      frame = 0;
+
+// create a canvas which will be used as a pattern
+  void initGrain() {
+    patternCanvas = document.createElement('canvas');
+    patternCanvas.width = patternSize;
+    patternCanvas.height = patternSize;
+    patternCtx = patternCanvas.getContext('2d');
+    patternData = patternCtx.createImageData(patternSize, patternSize);
+
+    var value;
+    Random rand = new Random.secure();
+    for (var i = 0; i < patternPixelDataLength; i += 4) {
+      value = (rand.nextDouble() * 255).floor();
+
+      patternData.data[i    ] = value;
+      patternData.data[i + 1] = value;
+      patternData.data[i + 2] = value;
+      patternData.data[i + 3] = patternAlpha;
+    }
+    patternCtx.putImageData(patternData, 0, 0);
+  }
 
 }

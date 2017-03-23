@@ -39,19 +39,19 @@ class OutputCanvas implements AfterViewInit {
   int bkgdIdx = 0;
 
   @Input()
-  int xOffset = 175;
+  int xOffset = 400;
 
   @Input()
-  int yOffset = 275;
+  int yOffset = 525;
 
   @Input()
-  int xDelta = -10;
+  int xDelta = -15;
 
   @Input()
   int yDelta = -10;
 
   @Input()
-  int scale = 100;
+  int scale = 300;
 
   @Input()
   int rotation = 0;
@@ -92,6 +92,7 @@ class OutputCanvas implements AfterViewInit {
 //    xDelta = (xDelta.length>0) ? xDelta : "10";
 //    yDelta = (yDelta.length>0) ? yDelta : "-10";
 //    scale = (scale.length>0) ? scale : "100";
+    rotation %= 360;
 
     if (maskedData == null || !(maskedData is CanvasElement)) {
       window.console.debug("No maskedData :(");
@@ -99,20 +100,28 @@ class OutputCanvas implements AfterViewInit {
     }
 
     ctx.setFillColorRgb(255, 255, 255);
-    ctx.rotate(rotation*PI/180);
+//    ctx.rotate(rotation*PI/180);
+
+    CanvasElement rotatedData = new CanvasElement(
+        width: 2*maskedData.width, height: 2*maskedData.height);
+    CanvasRenderingContext2D rotCtx = rotatedData.context2D;
+
+    rotCtx.translate(maskedData.width, maskedData.height);
+    rotCtx.rotate(rotation*PI/180);
+    rotCtx.drawImage(maskedData, -maskedData.width/2, -maskedData.height/2);
 
     for (int i = 0; i < 6; i++) {
-      ctx.shadowColor = '#333333';
-      ctx.shadowBlur = 10;
+      ctx.shadowColor = '#222222';
+      ctx.shadowBlur = 25;
       ctx.shadowOffsetX = 3;
       ctx.shadowOffsetY = 3;
       ctx.drawImageScaled(
-            maskedData,
-              0 + (xOffset + ((5-i) * xDelta)) - scale,
-            512 - (yOffset + ((5-i) * yDelta)) - scale,
-            2*scale, 2*scale);
+            rotatedData,
+                        0 + (xOffset + ((5-i) * xDelta)) - 2*scale,
+            canvas.height - (yOffset + ((5-i) * yDelta)) - 2*scale,
+            4*scale, 4*scale);
     }
 
-    ctx.rotate(-rotation*PI/180);
+//    ctx.rotate(-rotation*PI/180);
   }
 }
