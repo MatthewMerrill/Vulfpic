@@ -3,6 +3,22 @@
     "1": "",
     "3": [
       {
+        "1": "dart:async",
+        "5": false
+      },
+      {
+        "1": "dart:convert",
+        "5": false
+      },
+      {
+        "1": "dart:html",
+        "5": false
+      },
+      {
+        "1": "dart:math",
+        "5": false
+      },
+      {
         "1": "package:angular2/core.dart",
         "5": false
       },
@@ -69,7 +85,7 @@
       "lifecycleHooks": [],
       "template": {
         "encapsulation": 0,
-        "template": "<h4 style=\"white-space: pre\">-----------------------------------------\n---- vulfpic ----------------------------\n-----------------------------------------\n-------------------------- fan-made -----\n-------------------------------- site ---\n-----------------------------------------</h4>\n\n<p>Use the Clipping/Output toggle to switch between the \"clipping\" and \"positioning\" editors.</p>\n<ol>\n  <li>Upload an image and use the clipping editor to isolate just the part you want.</li>\n  <li>Swap into the positioning editor and change the values to get the positioning you want.</li>\n  <li>Right click the positioned image to save your image and/or copy it to your clipboard.</li>\n</ol>\n\n<br/>\n\n<material-toggle #showOutput\n                 label=\"Clipping Editor / Positioning Editor\"></material-toggle>\n\n<div [ngClass]=\"{hidden: showOutput.checked}\">\n  <clipping-canvas #clippingCanvas\n                   (change)=\"outputCanvas.updateData($event)\"></clipping-canvas>\n</div>\n\n<div [ngClass]=\"{hidden: !showOutput.checked}\">\n  <output-canvas #outputCanvas\n                 [xOffset]=\"xOffsetInput.value\"\n                 [yOffset]=\"yOffsetInput.value\"\n                 [xDelta]=\"xDeltaInput.value\"\n                 [yDelta]=\"yDeltaInput.value\"\n                 [scale]=\"scaleInput.value\"></output-canvas>\n  <span>\n    <label>X Offset (-1612 - +1612)\n        <input #xOffsetInput type=\"number\"\n               (input)=\"outputCanvas.draw()\" value=\"175\" min=\"-1612\" max=\"1612\">\n    </label><br/>\n\n    <label>Y Offset (-1612 - +1612)\n        <input #yOffsetInput type=\"number\"\n               (input)=\"outputCanvas.draw()\" value=\"250\" min=\"-1612\" max=\"1612\">\n    </label><br/>\n\n    <label>X Delta (-1612 - +1612)\n        <input #xDeltaInput type=\"number\"\n               (input)=\"outputCanvas.draw()\" value=\"-10\" min=\"-1612\" max=\"1612\">\n    </label><br/>\n\n    <label>Y Delta (-1612 - +1612)\n        <input #yDeltaInput type=\"number\"\n               (input)=\"outputCanvas.draw()\" value=\"-10\" min=\"-1612\" max=\"1612\">\n    </label><br/>\n\n    <label>Scale (0-1612)\n        <input #scaleInput type=\"number\"\n               (input)=\"outputCanvas.draw()\" value=\"100\" min=\"0\" max=\"1612\">\n    </label><br/>\n  </span>\n</div>",
+        "template": "<h4 style=\"white-space: pre\">-----------------------------------------\n---- vulfpic ----------------------------\n-----------------------------------------\n-------------------------- fan-made -----\n-------------------------------- site ---\n-----------------------------------------</h4>\n\n<material-button raised class=\"blue\" (click)=\"downloadSession()\">Download Current Session</material-button>\n<material-button raised class=\"blue\" (click)=\"uploadSession()\">Upload Session</material-button>\n\n<p>Use the Clipping/Output toggle to switch between the \"clipping\" and \"positioning\" editors.</p>\n<ol>\n  <li>Upload an image and use the clipping editor to isolate just the part you want.</li>\n  <li>Swap into the positioning editor and change the values to get the positioning you want.</li>\n  <li>Right click the positioned image to save your image and/or copy it to your clipboard.</li>\n</ol>\n\n<br/>\n\n<material-toggle #showOutput\n                 label=\"Clipping Editor / Positioning Editor\"></material-toggle>\n\n<div [ngClass]=\"{hidden: showOutput.checked}\">\n  <clipping-canvas #clippingCanvas\n                   (change)=\"outputCanvas.updateData($event)\"></clipping-canvas>\n</div>\n\n<div [ngClass]=\"{hidden: !showOutput.checked}\">\n  <output-canvas #outputCanvas></output-canvas>\n</div>\n\n<!--http://stackoverflow.com/a/30800715/3188059-->\n<a id=\"downloadAnchorElem\" style=\"display:none\"></a>\n<input id=\"uploadAnchorElem\" style=\"display:none\" type=\"file\" (change)=\"sessionUploaded($event)\">",
         "templateUrl": "asset:vulfpic/lib/app_component.html",
         "styles": [],
         "styleUrls": [
@@ -88,7 +104,47 @@
       ],
       "viewProviders": [],
       "queries": [],
-      "viewQueries": []
+      "viewQueries": [
+        {
+          "selectors": [
+            {
+              "value": "clippingCanvas",
+              "identifier": null,
+              "identifierIsInstance": false
+            }
+          ],
+          "descendants": true,
+          "first": true,
+          "propertyName": "clippingCanvas",
+          "read": null
+        },
+        {
+          "selectors": [
+            {
+              "value": "outputCanvas",
+              "identifier": null,
+              "identifierIsInstance": false
+            }
+          ],
+          "descendants": true,
+          "first": true,
+          "propertyName": "outputCanvas",
+          "read": null
+        },
+        {
+          "selectors": [
+            {
+              "value": "downloadAnchorElem",
+              "identifier": null,
+              "identifierIsInstance": false
+            }
+          ],
+          "descendants": true,
+          "first": true,
+          "propertyName": "downloadAnchorElem",
+          "read": null
+        }
+      ]
     }
   },
   "alias": {}

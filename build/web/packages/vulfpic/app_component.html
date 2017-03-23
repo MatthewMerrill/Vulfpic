@@ -5,6 +5,9 @@
 -------------------------------- site ---
 -----------------------------------------</h4>
 
+<material-button raised class="blue" (click)="downloadSession()">Download Current Session</material-button>
+<material-button raised class="blue" (click)="uploadSession()">Upload Session</material-button>
+
 <p>Use the Clipping/Output toggle to switch between the "clipping" and "positioning" editors.</p>
 <ol>
   <li>Upload an image and use the clipping editor to isolate just the part you want.</li>
@@ -23,36 +26,9 @@
 </div>
 
 <div [ngClass]="{hidden: !showOutput.checked}">
-  <output-canvas #outputCanvas
-                 [xOffset]="xOffsetInput.value"
-                 [yOffset]="yOffsetInput.value"
-                 [xDelta]="xDeltaInput.value"
-                 [yDelta]="yDeltaInput.value"
-                 [scale]="scaleInput.value"></output-canvas>
-  <span>
-    <label>X Offset (-1612 - +1612)
-        <input #xOffsetInput type="number"
-               (input)="outputCanvas.draw()" value="175" min="-1612" max="1612">
-    </label><br/>
-
-    <label>Y Offset (-1612 - +1612)
-        <input #yOffsetInput type="number"
-               (input)="outputCanvas.draw()" value="250" min="-1612" max="1612">
-    </label><br/>
-
-    <label>X Delta (-1612 - +1612)
-        <input #xDeltaInput type="number"
-               (input)="outputCanvas.draw()" value="-10" min="-1612" max="1612">
-    </label><br/>
-
-    <label>Y Delta (-1612 - +1612)
-        <input #yDeltaInput type="number"
-               (input)="outputCanvas.draw()" value="-10" min="-1612" max="1612">
-    </label><br/>
-
-    <label>Scale (0-1612)
-        <input #scaleInput type="number"
-               (input)="outputCanvas.draw()" value="100" min="0" max="1612">
-    </label><br/>
-  </span>
+  <output-canvas #outputCanvas></output-canvas>
 </div>
+
+<!--http://stackoverflow.com/a/30800715/3188059-->
+<a id="downloadAnchorElem" style="display:none"></a>
+<input id="uploadAnchorElem" style="display:none" type="file" (change)="sessionUploaded($event)">
