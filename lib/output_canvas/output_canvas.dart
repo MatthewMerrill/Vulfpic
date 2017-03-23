@@ -31,7 +31,7 @@ class OutputCanvas implements AfterViewInit {
 
   List<List<int>> bkgds = [
     [154, 190, 224],
-    [219, 143, 130],
+    [247, 207, 205],
     [234, 238, 224],
     [225, 228, 233],
 
