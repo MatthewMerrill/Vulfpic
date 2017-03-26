@@ -252,31 +252,33 @@ class ClippingCanvas implements AfterViewInit {
         data.height = max(img.width, img.height) * 10 ~/8;
         dataCtx = data.context2D;
 
-        CanvasElement grainData = new CanvasElement(
-            width:data.width,
-            height:data.height);
-        CanvasRenderingContext2D grainCtx = grainData.context2D;
+//        CanvasElement grainData = new CanvasElement(
+//            width:data.width,
+//            height:data.height);
+//        CanvasRenderingContext2D grainCtx = grainData.context2D;
 
         dataCtx.drawImage(img,
             (data.width-img.width)/2,
             (data.height-img.height)/2);
 
-        grainCtx.drawImage(img,
-            (data.width-img.width)/2,
-            (data.height-img.height)/2);
+        sharpen(dataCtx, data.width, data.height, 1);
 
-        initGrain();
-        grainCtx.save();
-        grainCtx.scale((data.width/333).ceil(), (data.width/333).ceil());
-        grainCtx.globalCompositeOperation = "overlay";
-        grainCtx.fillStyle = grainCtx.createPattern(patternCanvas, 'repeat');
-        grainCtx.fillRect(0, 0, data.width, data.height);
-        grainCtx.restore();
-
-        dataCtx.globalCompositeOperation = "source-in";
-        dataCtx.drawImage(grainData, 0, 0);
-
-        maskCtx.clearRect(0, 0, mask.width, mask.height);
+//        grainCtx.drawImage(img,
+//            (data.width-img.width)/2,
+//            (data.height-img.height)/2);
+//
+//        initGrain();
+//        grainCtx.save();
+//        grainCtx.scale((data.width/333).ceil(), (data.width/333).ceil());
+//        grainCtx.globalCompositeOperation = "overlay";
+//        grainCtx.fillStyle = grainCtx.createPattern(patternCanvas, 'repeat');
+//        grainCtx.fillRect(0, 0, data.width, data.height);
+//        grainCtx.restore();
+//
+//        dataCtx.globalCompositeOperation = "source-in";
+//        dataCtx.drawImage(grainData, 0, 0);
+//
+//        maskCtx.clearRect(0, 0, mask.width, mask.height);
 
         clicks.clear();
         clickDrag.clear();
@@ -339,6 +341,64 @@ class ClippingCanvas implements AfterViewInit {
       patternData.data[i + 3] = patternAlpha;
     }
     patternCtx.putImageData(patternData, 0, 0);
+  }
+
+  /// sharpen image:
+  /// USAGE:
+  ///    sharpen(context, width, height, mixFactor)
+  ///  mixFactor: [0.0, 1.0]
+  void sharpen(ctx, int w, int h, mix) {
+
+    var weights = [0, -1, 0, -1, 5, -1, 0, -1, 0],
+        katet = sqrt(weights.length).floor(),
+        half = (katet * 0.5) | 0,
+        dstData = ctx.createImageData(w, h),
+        dstBuff = dstData.data,
+        srcBuff = ctx.getImageData(0, 0, w, h).data;
+
+    int y = h;
+
+    while (y-- > 0) {
+
+      int x = w;
+
+      while (x-- > 0) {
+
+        var sy = y,
+            sx = x,
+            dstOff = (y * w + x) * 4,
+            r = 0,
+            g = 0,
+            b = 0,
+            a = 0;
+
+        for (var cy = 0; cy < katet; cy++) {
+          for (var cx = 0; cx < katet; cx++) {
+
+            var scy = sy + cy - half;
+            var scx = sx + cx - half;
+
+            if (scy >= 0 && scy < h && scx >= 0 && scx < w) {
+
+              var srcOff = (scy * w + scx) * 4;
+              var wt = weights[cy * katet + cx];
+
+              r += srcBuff[srcOff] * wt;
+              g += srcBuff[srcOff + 1] * wt;
+              b += srcBuff[srcOff + 2] * wt;
+              a += srcBuff[srcOff + 3] * wt;
+            }
+          }
+        }
+
+        dstBuff[dstOff] = r * mix + srcBuff[dstOff] * (1 - mix);
+        dstBuff[dstOff + 1] = g * mix + srcBuff[dstOff + 1] * (1 - mix);
+        dstBuff[dstOff + 2] = b * mix + srcBuff[dstOff + 2] * (1 - mix);
+        dstBuff[dstOff + 3] = srcBuff[dstOff + 3];
+      }
+    }
+
+    ctx.putImageData(dstData, 0, 0);
   }
 
 }
