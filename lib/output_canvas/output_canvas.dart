@@ -22,6 +22,8 @@ class OutputCanvas implements AfterViewInit {
   CanvasElement canvas;
   CanvasRenderingContext2D ctx;
 
+  ImageElement mrfinishline;
+
   var maskedData;
 
   ImageData pixels;
@@ -29,12 +31,11 @@ class OutputCanvas implements AfterViewInit {
   int WIDTH = 1024;
   int HEIGHT = 1024;
 
-  List<List<int>> bkgds = [
+  List<List<int>> bkgdColors = [
     [154, 190, 224],
     [247, 207, 205],
     [234, 238, 224],
     [225, 228, 233],
-
   ];
   int bkgdIdx = 0;
 
@@ -59,6 +60,7 @@ class OutputCanvas implements AfterViewInit {
   @override
   ngAfterViewInit() {
     canvas = querySelector('#outputCanvas');
+    mrfinishline = querySelector('#mrfinishline');
     ctx = canvas.getContext('2d');
     draw();
   }
@@ -81,11 +83,16 @@ class OutputCanvas implements AfterViewInit {
   @Input()
   void draw() {
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
-    ctx.setFillColorRgb(
-        bkgds[bkgdIdx][0],
-        bkgds[bkgdIdx][1],
-        bkgds[bkgdIdx][2]);
-    ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+    if (bkgdIdx>=0) {
+      ctx.setFillColorRgb(
+          bkgdColors[bkgdIdx][0],
+          bkgdColors[bkgdIdx][1],
+          bkgdColors[bkgdIdx][2]);
+      ctx.fillRect(0, 0, WIDTH, HEIGHT);
+    } else {
+      ctx.drawImageScaled(mrfinishline, 0, 0, canvas.width, canvas.height);
+    }
 //
 //    xOffset = (xOffset.length>0) ? xOffset : "150";
 //    yOffset = (yOffset.length>0) ? yOffset : "50";
@@ -110,16 +117,51 @@ class OutputCanvas implements AfterViewInit {
     rotCtx.rotate(rotation*PI/180);
     rotCtx.drawImage(maskedData, -maskedData.width/2, -maskedData.height/2);
 
-    for (int i = 0; i < 6; i++) {
+    if (bkgdIdx != -1) {
+      for (int i = 0; i < 6; i++) {
+        ctx.shadowColor = '#222222';
+        ctx.shadowBlur = 25;
+        ctx.shadowOffsetX = 3;
+        ctx.shadowOffsetY = 3;
+        ctx.drawImageScaled(
+            rotatedData,
+            0 + (xOffset + ((5 - i) * xDelta)) - 2 * scale,
+            canvas.height - (yOffset + ((5 - i) * yDelta)) - 2 * scale,
+            4 * scale, 4 * scale);
+      }
+    }
+    else if (bkgdIdx == -1){
+      var i = 5;
+
       ctx.shadowColor = '#222222';
       ctx.shadowBlur = 25;
       ctx.shadowOffsetX = 3;
       ctx.shadowOffsetY = 3;
       ctx.drawImageScaled(
-            rotatedData,
-                        0 + (xOffset + ((5-i) * xDelta)) - 2*scale,
-            canvas.height - (yOffset + ((5-i) * yDelta)) - 2*scale,
-            4*scale, 4*scale);
+          rotatedData,
+          0 + (xOffset + ((5 - i) * xDelta)) - 2 * scale,
+          canvas.height - (yOffset + ((5 - i) * yDelta)) - 2 * scale,
+          4 * scale, 4 * scale);
+
+      CanvasElement invertedData = new CanvasElement(
+          width: 2*maskedData.width, height: 2*maskedData.height);
+      CanvasRenderingContext2D invCtx = invertedData.context2D;
+
+      invCtx.translate(maskedData.width, maskedData.height);
+      invCtx.rotate((180+rotation)*PI/180);
+      invCtx.drawImage(maskedData, -maskedData.width/2, -maskedData.height/2);
+
+      i = 4;
+
+      ctx.shadowColor = '#222222';
+      ctx.shadowBlur = 25;
+      ctx.shadowOffsetX = 3;
+      ctx.shadowOffsetY = 3;
+      ctx.drawImageScaled(
+          invertedData,
+          0 + (xOffset + ((5 - i) * xDelta)) - 2 * scale,
+          (yOffset + ((5 - i) * yDelta)) - 2 * scale,
+          4 * scale, 4 * scale);
     }
 
 //    ctx.rotate(-rotation*PI/180);

@@ -1,8 +1,10 @@
 <div>
+  <img id="mrfinishline" src="/mrfinishline_blank.png" style="display:none;">
   <material-button class="white" raised (click)="bkgdIdx=0; draw();">Blue</material-button>
   <material-button class="white" raised (click)="bkgdIdx=1; draw();">Red</material-button>
   <material-button class="white" raised (click)="bkgdIdx=2; draw();">Yellow</material-button>
   <material-button class="white" raised (click)="bkgdIdx=3; draw();">White</material-button>
+  <material-button class="white" raised (click)="bkgdIdx=-1; draw();">MR FINISH LINE</material-button>
 
   <br/>
   <canvas id="outputCanvas" width="1024" height="1024"></canvas>
