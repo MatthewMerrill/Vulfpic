@@ -25426,7 +25426,7 @@ this.k2=x
 x.setAttribute(w.f,"")
 this.k1.appendChild(this.k2)
 this.k2.setAttribute("id","mrfinishline")
-this.k2.setAttribute("src","/mrfinishline_blank.png")
+this.k2.setAttribute("src","./mrfinishline_blank.png")
 this.k2.setAttribute("style","display:none;")
 u=y.createTextNode("\n  ")
 this.k1.appendChild(u)
